@@ -22,9 +22,10 @@ jobs:
       - name: config cmake
         run: >-
           cmake
+          -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=""
           -Bbuild
       - name: build
-        run: cmake --build build
+        run: cmake --build build --config Release
       - name: setup OS
         id: setup_os
         run: |
