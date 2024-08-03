@@ -10,43 +10,12 @@ on:
   push:
 
 jobs:
-  release:
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Extract tag name
-        id: tag
-        uses: actions/github-script@0.2.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            return context.payload.ref.replace(/\/refs\/tags\//, '');
-      - name: create release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.tag.outputs.result }}
-          tag_name: ${{ github.ref }}
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-    outputs:
-      out_tag: ${{ steps.tag.outputs.result }}
-      out_url: ${{ steps.create_release.outputs.upload_url }}
-
   build:
     strategy:
       matrix:
         os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
-    needs: release
 
     steps:
       - uses: actions/checkout@v4
