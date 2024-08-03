@@ -45,7 +45,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
     needs: release
@@ -65,7 +65,11 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
                echo "os=linux" >> "$GITHUB_OUTPUT"
                echo "file=build/bin/libqmap.so" >> "$GITHUB_OUTPUT"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+               echo "os=macos" >> "$GITHUB_OUTPUT"
+               echo "file=build/bin/libqmap.so" >> "$GITHUB_OUTPUT"
           elif [ "$RUNNER_OS" == "Windows" ]; then
+               choco install zip
                echo "os=win" >> "$GITHUB_OUTPUT"
                echo "file=build\src\qmap.dll" >> "$GITHUB_OUTPUT"
           else
