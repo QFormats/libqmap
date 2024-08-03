@@ -31,13 +31,15 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
                echo "os=linux" >> "$GITHUB_OUTPUT"
+               echo "file=build/bin/libqmap.so" >> "$GITHUB_OUTPUT"
           elif [ "$RUNNER_OS" == "Windows" ]; then
                choco install zip
                echo "os=win" >> "$GITHUB_OUTPUT"
+               echo "file=build\src\qmap.dll" >> "$GITHUB_OUTPUT"
           else
                echo "$RUNNER_OS not supported"
                exit 1
           fi
         shell: bash
       - name: pack
-        run: zip -j libqmap-${{ steps.setup_os.outputs.os }}.zip build/bin/*
+        run: zip -j libqmap-${{ steps.setup_os.outputs.os }}.zip ${{ steps.setup_os.outputs.file }}
