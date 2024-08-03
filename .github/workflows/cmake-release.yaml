@@ -1,0 +1,27 @@
+name: cmake-release
+
+env:
+  CTEST_NO_TESTS_ACTION: error
+  CTEST_PARALLEL_LEVEL: 0
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+on:
+  push:
+
+jobs:
+  core:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: config cmake
+        run: >-
+          cmake
+          -Bbuild
+      - name: build
+        run: cmake --build build
