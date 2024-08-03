@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        prefix: [linux]
 
     runs-on: ${{ matrix.os }}
 
@@ -25,3 +26,5 @@ jobs:
           -Bbuild
       - name: build
         run: cmake --build build
+      - name: zip
+        run: zip -j libqmap-{matrix.prefix}.zip build/bin/*
