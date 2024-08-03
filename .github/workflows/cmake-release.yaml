@@ -12,10 +12,11 @@ on:
       - "*"
 jobs:
   release:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Extract tag name
@@ -43,8 +44,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        prefix: [linux, win]
+        os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
     needs: release
@@ -57,14 +57,26 @@ jobs:
           -Bbuild
       - name: build
         run: cmake --build build
-      - name: zip
-        run: zip -j libqmap-${{ matrix.prefix }}.zip build/bin/*
+      - name: setup OS
+        id: setup_os
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+               echo "os=linux" >> "$GITHUB_OUTPUT"
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+               choco install zip
+               echo "os=win" >> "$GITHUB_OUTPUT"
+          else
+               echo "$RUNNER_OS not supported"
+               exit 1
+          fi
+      - name: pack
+        run: zip -j libqmap-${{ steps.setup_os.outputs.os }}.zip build/bin/*
       - name: upload artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{needs.release.outputs.out_url}}
-          asset_path: ./libqmap-${{ matrix.prefix }}.zip
-          asset_name: libqmap-${{ matrix.prefix }}.zip
+          asset_path: ./libqmap-${{ steps.setup_os.outputs.os }}.zip
+          asset_name: libqmap-${{ steps.setup_os.outputs.os }}.zip
           asset_content_type: application/zip
