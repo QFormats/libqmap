@@ -67,7 +67,7 @@ jobs:
                echo "file=build/bin/libqmap.so" >> "$GITHUB_OUTPUT"
           elif [ "$RUNNER_OS" == "macOS" ]; then
                echo "os=macos" >> "$GITHUB_OUTPUT"
-               echo "file=build/bin/libqmap.so" >> "$GITHUB_OUTPUT"
+               echo "file=build/bin/libqmap.dylib" >> "$GITHUB_OUTPUT"
           elif [ "$RUNNER_OS" == "Windows" ]; then
                choco install zip
                echo "os=win" >> "$GITHUB_OUTPUT"
