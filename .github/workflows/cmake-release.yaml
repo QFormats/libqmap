@@ -27,4 +27,4 @@ jobs:
       - name: build
         run: cmake --build build
       - name: zip
-        run: zip -j libqmap-{matrix.prefix}.zip build/bin/*
+        run: zip -j libqmap-${{ matrix.prefix }}.zip build/bin/*
