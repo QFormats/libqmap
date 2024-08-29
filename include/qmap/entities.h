@@ -20,9 +20,8 @@ namespace qformats::map
 		};
 
 		explicit BaseEntity(eEntityType type)
-			: type(type)
-		{
-		};
+			: type(type) {
+			  };
 
 		eEntityType type{};
 		std::string classname;
@@ -38,50 +37,48 @@ namespace qformats::map
 	{
 	public:
 		PointEntity()
-			: BaseEntity(POINT)
-		{
-		};
+			: BaseEntity(POINT) {
+			  };
 	};
 
 	class SolidEntity : public BaseEntity
 	{
 	public:
 		SolidEntity()
-			: BaseEntity(SOLID)
-		{
-		};
+			: BaseEntity(SOLID) {
+			  };
 
 		[[nodiscard]] std::string ClassName() const
 		{
 			return classname;
 		};
 
-		[[nodiscard]] bool ClassContains(const std::string& substr) const
+		[[nodiscard]] bool ClassContains(const std::string &substr) const
 		{
 			return classname.find(substr) != std::string::npos;
 		};
 
-		const std::vector<Brush>& GetBrushes()
+		const std::vector<Brush> &GetBrushes()
 		{
 			return brushes;
 		}
 
-		const std::vector<Brush>& GetClippedBrushes()
+		const std::vector<Brush> &GetClippedBrushes() const
 		{
 			return clippedBrushes;
 		}
 
-		const fvec3& GetCenter() const
+		const fvec3 &GetCenter() const
 		{
 			return center;
 		}
 
-		const fvec3& GetMin() const
+		const fvec3 &GetMin() const
 		{
 			return min;
 		}
 
-		const fvec3& GetMax() const
+		const fvec3 &GetMax() const
 		{
 			return max;
 		}
@@ -93,7 +90,7 @@ namespace qformats::map
 		}
 
 	private:
-		void generateMesh(const std::map<int, Face::eFaceType>& faceTypes);
+		void generateMesh(const std::map<int, Face::eFaceType> &faceTypes, const std::map<int, textureBounds> &texBounds);
 		void csgUnion();
 
 		std::vector<Brush> brushes;

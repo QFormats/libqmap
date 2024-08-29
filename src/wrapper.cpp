@@ -3,10 +3,10 @@
 #include <vector>
 #include "wrapper.h"
 
-API_EXPORT qformats::map::QMap *LoadMap(const char *mapFile)
+API_EXPORT qformats::map::QMap *LoadMap(const char *mapFile, qformats::map::getTextureBoundsCb getTextureBounds)
 {
     auto map = new qformats::map::QMap();
-    map->LoadFile(mapFile);
+    map->LoadFile(mapFile, getTextureBounds);
     return map;
 }
 
@@ -55,13 +55,13 @@ API_EXPORT QMapSolidEntity GetSolidEntityData(qformats::map::SolidEntity *ptr)
 API_EXPORT void GetSolidEntityBrushes(qformats::map::SolidEntity *ent, void(add)(int idx, vec3 min, vec3 max))
 {
     const auto brushes = ent->GetClippedBrushes();
-    for (const auto &b : brushes)
+    for (int i = 0; i < brushes.size(); i++)
     {
-        add(b.GetFaces().size(), toVec3(b.min), toVec3(b.max));
+        add(i, toVec3(brushes[i].min), toVec3(brushes[i].max));
     }
 }
 
-API_EXPORT void GetBrushFaces(qformats::map::SolidEntity *ent, int brushIdx, void(add)(face f))
+API_EXPORT void GetBrushFaces(qformats::map::SolidEntity *ent, int brushIdx, void(add)(int idx, int texID))
 {
     if (ent == nullptr || ent->GetClippedBrushes().size() < brushIdx)
     {
@@ -72,9 +72,7 @@ API_EXPORT void GetBrushFaces(qformats::map::SolidEntity *ent, int brushIdx, voi
 
     for (int i = 0; i < nativeFaces.size(); i++)
     {
-        add(face{
-            .textureID = nativeFaces[i]->TextureID(),
-        });
+        add(i, nativeFaces[i]->TextureID());
     }
 }
 

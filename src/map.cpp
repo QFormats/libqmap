@@ -4,58 +4,65 @@
 
 namespace qformats::map
 {
-	void QMap::LoadFile(const std::string &filename)
+	void QMap::LoadFile(const std::string &filename, getTextureBoundsCb getTextureBounds)
 	{
 		map_file = std::make_shared<QMapFile>();
 		map_file->Parse(filename);
+		if (getTextureBounds != nullptr)
+		{
+			for (int i = 0; i < map_file->textures.size(); i++)
+			{
+				textureIDBounds[i] = getTextureBounds(map_file->textures[i].c_str());
+			}
+		}
 	}
 
 	void QMap::GenerateGeometry(bool clipBrushes)
 	{
 		for (const auto &se : map_file->solidEntities)
 		{
-			se->generateMesh(textureIDTypes);
+			se->generateMesh(textureIDTypes, textureIDBounds);
 			if (clipBrushes)
 			{
 				se->csgUnion();
 			}
 		}
 	}
-
-	void QMap::LoadTextures(textures::textureRequestCb cb)
-	{
-		texMan.OnTextureRequested(cb);
-
-		for (auto t : map_file->textures)
+	/*
+		void QMap::LoadTextures(textures::textureRequestCb cb)
 		{
-			texMan.GetOrAddTexture(t);
-		}
+			texMan.OnTextureRequested(cb);
 
-		for (auto &se : map_file->solidEntities)
-		{
-			auto &brushes = se->clippedBrushes.empty() ? se->brushes : se->clippedBrushes;
-			for (auto &b : brushes)
+			for (auto t : map_file->textures)
 			{
-				for (auto p : b.GetFaces())
+				texMan.GetOrAddTexture(t);
+			}
+
+			for (auto &se : map_file->solidEntities)
+			{
+				auto &brushes = se->clippedBrushes.empty() ? se->brushes : se->clippedBrushes;
+				for (auto &b : brushes)
 				{
-					if (p->vertices.size() == 0)
+					for (auto p : b.GetFaces())
 					{
-						continue;
-					}
-					auto tex = texMan.GetTexture(p->textureID);
-					if (tex == nullptr)
-					{
-						continue;
-					}
-					for (auto &v : p->vertices)
-					{
-						v.uv = p->CalcUV(v.point, tex->Width(), tex->Height());
+						if (p->vertices.size() == 0)
+						{
+							continue;
+						}
+						auto tex = texMan.GetTexture(p->textureID);
+						if (tex == nullptr)
+						{
+							continue;
+						}
+						for (auto &v : p->vertices)
+						{
+							v.uv = p->CalcUV(v.point, tex->Width(), tex->Height());
+						}
 					}
 				}
 			}
 		}
-	}
-
+	*/
 	void QMap::SetFaceTypeByTextureID(const std::string &texture, Face::eFaceType type)
 	{
 		if (map_file == nullptr)
@@ -104,9 +111,17 @@ namespace qformats::map
 		return !list.empty();
 	}
 
-	std::vector<FacePtr> QMap::GetPolygonsByTexture(int entityID, const std::string &texName)
+	std::vector<FacePtr> QMap::GetPolygonsByTexture(int entityID, const std::string &findName)
 	{
-		int id = texMan.GetTextureID(texName);
+		int id = -1;
+		for (int i = 0; i < map_file->textures.size(); i++)
+		{
+			if (map_file->textures[i] == findName)
+			{
+				id = i;
+				break;
+			}
+		}
 		std::vector<FacePtr> polyList;
 		if (id == -1)
 		{

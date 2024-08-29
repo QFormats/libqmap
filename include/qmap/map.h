@@ -11,11 +11,11 @@
 #include "map_file.h"
 #include "brush.h"
 #include "entities.h"
-#include "metatexture.h"
 
 namespace qformats::map
 {
 	using polygonGatherCb = std::function<void(std::vector<FacePtr>, int)>;
+	using getTextureBoundsCb = textureBounds(const char *textureName);
 
 	class QMap
 	{
@@ -23,16 +23,13 @@ namespace qformats::map
 		QMap() = default;
 		~QMap() = default;
 
-		void LoadTextures(textures::textureRequestCb cb);
-		void LoadFile(const std::string &filename);
+		void LoadFile(const std::string &filename, getTextureBoundsCb getTextureBounds = nullptr);
 		void GenerateGeometry(bool clipBrushes = true);
 		void GatherPolygons(int entityID, const polygonGatherCb &);
 
 		std::vector<FacePtr> GetPolygonsByTexture(int entityID, const std::string &texName);
-		const std::vector<string> &Wads() { return map_file->wads; };
+		const std::vector<std::string> &Wads() { return map_file->wads; };
 		bool HasWads() { return !map_file->wads.empty(); };
-		textures::ITexture *GetTextureByID(int id) { return texMan.GetTexture(id); };
-		std::vector<textures::ITexture *> GetTextures() { return texMan.GetTextures(); };
 
 		const std::vector<std::string> &GetTexturesNames() { return map_file->textures; };
 		QMapFile *MapData() { return map_file.get(); };
@@ -47,7 +44,7 @@ namespace qformats::map
 		bool getPolygonsByTextureID(int entityID, int texID, std::vector<FacePtr> &list);
 
 		std::map<int, Face::eFaceType> textureIDTypes;
-		textures::TextureMan texMan;
+		std::map<int, textureBounds> textureIDBounds;
 		std::shared_ptr<QMapFile> map_file;
 	};
 }

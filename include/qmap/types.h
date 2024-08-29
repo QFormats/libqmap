@@ -17,13 +17,13 @@ using tue::math::cross;
 using tue::math::dot;
 using tue::math::normalize;
 
-static std::ostream& operator<<(std::ostream& stream, const fvec3& v)
+static std::ostream &operator<<(std::ostream &stream, const fvec3 &v)
 {
 	stream << "(" << v[0] << " " << v[1] << " " << v[2] << ")";
 	return stream;
 }
 
-inline float dist3(const fvec3& a, const fvec3& b)
+inline float dist3(const fvec3 &a, const fvec3 &b)
 {
 	fvec3 diff = b - a;
 	return sqrtf(dot(diff, diff));
@@ -32,8 +32,8 @@ inline float dist3(const fvec3& a, const fvec3& b)
 namespace qformats::map
 {
 	const double epsilon = 1e-5; // Used to compensate for floating point inaccuracy.
-	const double scale = 128;    // Scale
-// MAP FILE
+	const double scale = 128;	 // Scale
+								 // MAP FILE
 
 	struct StandardUV
 	{
@@ -46,7 +46,7 @@ namespace qformats::map
 		fvec4 v;
 	};
 
-// GEOMETRY
+	// GEOMETRY
 	struct Vertex
 	{
 		fvec3 point;
@@ -54,15 +54,15 @@ namespace qformats::map
 		fvec2 uv;
 		fvec4 tangent;
 
-		friend std::ostream& operator<<(std::ostream& stream, const Vertex& v)
+		friend std::ostream &operator<<(std::ostream &stream, const Vertex &v)
 		{
 			stream << "(" << v.point[0] << " " << v.point[1] << " " << v.point[2] << ")";
 			return stream;
 		}
 
-		inline bool inList(const std::vector<Vertex>& list)
+		inline bool inList(const std::vector<Vertex> &list)
 		{
-			for (auto const& v : list)
+			for (auto const &v : list)
 			{
 				if (v.point == point)
 					return true;
@@ -71,4 +71,9 @@ namespace qformats::map
 		}
 	};
 
+	struct textureBounds
+	{
+		float width;
+		float height;
+	};
 }

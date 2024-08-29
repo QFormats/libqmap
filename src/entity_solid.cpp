@@ -3,7 +3,7 @@
 namespace qformats::map
 {
 
-	void SolidEntity::generateMesh(const std::map<int, Face::eFaceType> &faceTypes)
+	void SolidEntity::generateMesh(const std::map<int, Face::eFaceType> &faceTypes, const std::map<int, textureBounds> &texBounds)
 	{
 		if (!brushes.empty())
 		{
@@ -12,7 +12,7 @@ namespace qformats::map
 		}
 		for (auto &b : brushes)
 		{
-			b.buildGeometry(faceTypes);
+			b.buildGeometry(faceTypes, texBounds);
 			b.GetBiggerBBox(min, max);
 		}
 		center = CalculateCenterFromBBox(min, max);

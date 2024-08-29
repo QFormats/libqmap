@@ -5,7 +5,6 @@ add_library(${PROJECT_NAME} SHARED
         qmath.cpp
         face.cpp
         entity_solid.cpp
-        metatexture.cpp
         wrapper.cpp
 )
 

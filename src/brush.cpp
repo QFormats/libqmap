@@ -6,9 +6,9 @@ namespace qformats::map
 {
 	const auto fv3zero = Vertex();
 
-	void Brush::buildGeometry(const std::map<int, Face::eFaceType> &faceTypes)
+	void Brush::buildGeometry(const std::map<int, Face::eFaceType> &faceTypes, const std::map<int, textureBounds> &texBounds)
 	{
-		generatePolygons(faceTypes);
+		generatePolygons(faceTypes, texBounds);
 		windFaceVertices();
 		indexFaceVertices();
 		calculateAABB();
@@ -199,7 +199,7 @@ namespace qformats::map
 		return normalize(normal);
 	}
 
-	void Brush::generatePolygons(const std::map<int, Face::eFaceType> &faceTypes)
+	void Brush::generatePolygons(const std::map<int, Face::eFaceType> &faceTypes, const std::map<int, textureBounds> &texBounds)
 	{
 		float phongAngle = 89.0;
 		for (int i = 0; i < faces.size(); i++)
@@ -229,7 +229,9 @@ namespace qformats::map
 
 					auto res = intersectPlanes(faces[i], faces[j], faces[k]);
 					if (!res.first || !isLegalVertex(res.second, faces))
+					{
 						continue;
+					}
 
 					res.second = mergeDuplicate(i, res.second);
 
@@ -237,6 +239,12 @@ namespace qformats::map
 					v.normal = faces[i]->planeNormal;
 					v.normal = normalize(v.normal);
 					v.tangent = faces[k]->CalcTangent();
+
+					auto tb = texBounds.find(faces[k]->textureID);
+					if (tb != texBounds.end() && (tb->second.width > 0 && tb->second.height > 0))
+					{
+						v.uv = faces[k]->CalcUV(v.point, tb->second.width, tb->second.height);
+					}
 
 					if (v.inList(faces[k]->vertices))
 						continue;
