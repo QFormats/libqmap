@@ -10,9 +10,9 @@ API_EXPORT qformats::map::QMap *LoadMap(const char *mapFile, qformats::map::getT
     return map;
 }
 
-API_EXPORT void GenerateGeometry(qformats::map::QMap *ptr, int *outEntCount)
+API_EXPORT void GenerateGeometry(qformats::map::QMap *ptr, int *outEntCount, bool clipBrushes = false)
 {
-    ptr->GenerateGeometry();
+    ptr->GenerateGeometry(clipBrushes);
     *outEntCount = ptr->GetSolidEntities().size();
 }
 

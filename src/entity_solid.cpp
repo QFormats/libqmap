@@ -51,5 +51,9 @@ namespace qformats::map
 			}
 		}
 		center = CalculateCenterFromBBox(min, max);
+		if (brushes.size() > 0 && clippedBrushes.size() > 0)
+		{
+			wasClipped = true;
+		}
 	}
 }

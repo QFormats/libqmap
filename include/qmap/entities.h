@@ -58,8 +58,17 @@ namespace qformats::map
 			return classname.find(substr) != std::string::npos;
 		};
 
+		const std::vector<Brush> &GetOriginalBrushes()
+		{
+			return brushes;
+		}
+
 		const std::vector<Brush> &GetBrushes()
 		{
+			if (wasClipped)
+			{
+				return clippedBrushes;
+			}
 			return brushes;
 		}
 
@@ -98,6 +107,7 @@ namespace qformats::map
 		bool hasPhongShading{};
 		std::vector<int> textureIDs;
 		size_t stats_clippedFaces{};
+		bool wasClipped;
 
 		fvec3 center{};
 		fvec3 min{};
