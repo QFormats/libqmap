@@ -8,7 +8,7 @@
 #define EXTERNC
 #endif
 
-#if defined(__WIN32)
+#if defined(__WINNT__)
 #define API_EXPORT EXTERNC __stdcall
 #elif defined(__linux__)
 #define API_EXPORT EXTERNC
