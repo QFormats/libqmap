@@ -8,9 +8,9 @@
 #define EXTERNC
 #endif
 
-#if defined(__NT__)
+#if defined(__WIN32)
 #define API_EXPORT EXTERNC __stdcall
-#elif defined(__UNIX__)
+#elif defined(__linux__)
 #define API_EXPORT EXTERNC
 #elif defined(__APPLE__)
 #define API_EXPORT EXTERNC __attribute__((visibility("default")))
