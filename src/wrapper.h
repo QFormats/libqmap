@@ -94,9 +94,14 @@ struct brush
     face **faces;
 };
 
+struct QMapPointEntity
+{
+    vec3 origin;
+    float angle;
+};
+
 struct QMapSolidEntity
 {
-    const char *classname;
     vec3 center;
     vec3 min;
     vec3 max;

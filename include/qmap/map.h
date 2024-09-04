@@ -15,7 +15,7 @@
 namespace qformats::map
 {
 	using polygonGatherCb = std::function<void(std::vector<FacePtr>, int)>;
-	using getTextureBoundsCb = textureBounds(const char *textureName);
+	using getTextureBoundsCb = std::function<textureBounds(const char *textureName)>;
 
 	class QMap
 	{

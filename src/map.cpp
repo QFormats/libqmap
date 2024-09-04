@@ -28,41 +28,7 @@ namespace qformats::map
 			}
 		}
 	}
-	/*
-		void QMap::LoadTextures(textures::textureRequestCb cb)
-		{
-			texMan.OnTextureRequested(cb);
 
-			for (auto t : map_file->textures)
-			{
-				texMan.GetOrAddTexture(t);
-			}
-
-			for (auto &se : map_file->solidEntities)
-			{
-				auto &brushes = se->clippedBrushes.empty() ? se->brushes : se->clippedBrushes;
-				for (auto &b : brushes)
-				{
-					for (auto p : b.GetFaces())
-					{
-						if (p->vertices.size() == 0)
-						{
-							continue;
-						}
-						auto tex = texMan.GetTexture(p->textureID);
-						if (tex == nullptr)
-						{
-							continue;
-						}
-						for (auto &v : p->vertices)
-						{
-							v.uv = p->CalcUV(v.point, tex->Width(), tex->Height());
-						}
-					}
-				}
-			}
-		}
-	*/
 	void QMap::SetFaceTypeByTextureID(const std::string &texture, Face::eFaceType type)
 	{
 		if (map_file == nullptr)

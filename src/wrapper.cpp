@@ -3,17 +3,23 @@
 #include <vector>
 #include "wrapper.h"
 
-API_EXPORT qformats::map::QMap *LoadMap(const char *mapFile, qformats::map::getTextureBoundsCb getTextureBounds)
+API_EXPORT qformats::map::QMap *LoadMap(const char *mapFile, qformats::map::textureBounds(getTextureBounds)(const char *))
 {
     auto map = new qformats::map::QMap();
     map->LoadFile(mapFile, getTextureBounds);
     return map;
 }
 
-API_EXPORT void GenerateGeometry(qformats::map::QMap *ptr, int *outEntCount, bool clipBrushes = false)
+API_EXPORT void GenerateGeometry(qformats::map::QMap *ptr, int *outPointEntCount, int *outSolidEntCount, bool clipBrushes = true)
 {
     ptr->GenerateGeometry(clipBrushes);
-    *outEntCount = ptr->GetSolidEntities().size();
+    *outSolidEntCount = ptr->GetSolidEntities().size();
+    *outPointEntCount = ptr->GetPointEntities().size();
+}
+
+API_EXPORT void SetFaceType(qformats::map::QMap *ptr, const char *textureName, uint8_t faceType)
+{
+    ptr->SetFaceTypeByTextureID(textureName, (qformats::map::Face::eFaceType)faceType);
 }
 
 API_EXPORT void GetTextures(qformats::map::QMap *ptr, void(add)(const char *tex))
@@ -24,19 +30,44 @@ API_EXPORT void GetTextures(qformats::map::QMap *ptr, void(add)(const char *tex)
     }
 }
 
-API_EXPORT void GetEntityAttributes(qformats::map::QMap *ptr, int idx, qformats::map::SolidEntity **entOut, void(add)(const char *first, const char *second))
+API_EXPORT void GetEntityAttributes(qformats::map::QMap *ptr, uint8_t type, int idx, qformats::map::BaseEntity **entOut, void(add)(const char *first, const char *second))
 {
-    if (entOut == nullptr || ptr == nullptr || ptr->GetSolidEntities().size() < idx)
+    if (entOut == nullptr || ptr == nullptr)
     {
         return;
     }
 
-    *entOut = ptr->GetSolidEntities()[idx].get();
+    if (type == 0 && ptr->GetSolidEntities().size() > idx)
+    {
+        *entOut = ptr->GetSolidEntities()[idx].get();
+    }
+    else if (type == 1 && ptr->GetPointEntities().size() > idx)
+    {
+        *entOut = ptr->GetPointEntities()[idx].get();
+    }
+
+    if ((*entOut) == nullptr)
+    {
+        return;
+    }
+
+    add("classname", (*entOut)->classname.c_str());
     for (const auto &pair : (*entOut)->attributes)
     {
         add(pair.first.c_str(), pair.second.c_str());
     }
-    return;
+}
+
+API_EXPORT QMapPointEntity GetPointEntityData(qformats::map::BaseEntity *ptr)
+{
+    QMapPointEntity outData{};
+    if (ptr != nullptr)
+    {
+        outData.origin = toVec3(ptr->origin);
+        outData.angle = ptr->angle;
+    }
+
+    return outData;
 }
 
 API_EXPORT QMapSolidEntity GetSolidEntityData(qformats::map::SolidEntity *ptr)
@@ -44,7 +75,6 @@ API_EXPORT QMapSolidEntity GetSolidEntityData(qformats::map::SolidEntity *ptr)
     QMapSolidEntity outData{};
     if (ptr != nullptr)
     {
-        outData.classname = ptr->classname.c_str();
         outData.center = toVec3(ptr->GetCenter());
         outData.min = toVec3(ptr->GetMin());
         outData.max = toVec3(ptr->GetMax());
@@ -61,7 +91,7 @@ API_EXPORT void GetSolidEntityBrushes(qformats::map::SolidEntity *ent, void(add)
     }
 }
 
-API_EXPORT void GetBrushFaces(qformats::map::SolidEntity *ent, int brushIdx, void(add)(int idx, int texID))
+API_EXPORT void GetBrushFaces(qformats::map::SolidEntity *ent, int brushIdx, void(add)(int idx, int texID, uint8_t faceType))
 {
     if (ent == nullptr || ent->GetClippedBrushes().size() < brushIdx)
     {
@@ -72,7 +102,7 @@ API_EXPORT void GetBrushFaces(qformats::map::SolidEntity *ent, int brushIdx, voi
 
     for (int i = 0; i < nativeFaces.size(); i++)
     {
-        add(i, nativeFaces[i]->TextureID());
+        add(i, nativeFaces[i]->TextureID(), nativeFaces[i]->Type());
     }
 }
 
