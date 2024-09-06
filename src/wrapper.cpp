@@ -13,8 +13,8 @@ API_EXPORT qformats::map::QMap *LoadMap(const char *mapFile, qformats::map::text
 API_EXPORT void GenerateGeometry(qformats::map::QMap *ptr, int *outPointEntCount, int *outSolidEntCount, bool clipBrushes = true)
 {
     ptr->GenerateGeometry(clipBrushes);
-    *outSolidEntCount = ptr->GetSolidEntities().size();
-    *outPointEntCount = ptr->GetPointEntities().size();
+    *outSolidEntCount = (int)ptr->GetSolidEntities().size();
+    *outPointEntCount = (int)ptr->GetPointEntities().size();
 }
 
 API_EXPORT void SetFaceType(qformats::map::QMap *ptr, const char *textureName, uint8_t faceType)
@@ -115,8 +115,8 @@ API_EXPORT void GetFaceData(qformats::map::SolidEntity *ent, int brushIdx, int f
     const auto &brush = ent->GetClippedBrushes()[brushIdx];
     const auto &face = brush.GetFaces()[faceIdx];
 
-    *vertCount = face->GetVertices().size();
-    *indexCount = face->GetIndices().size();
+    *vertCount = (int)face->GetVertices().size();
+    *indexCount = (int)face->GetIndices().size();
 
     if (vertCount == 0)
     {

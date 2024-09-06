@@ -12,9 +12,9 @@ namespace qformats::map
 		return stream;
 	}
 
-	const float CMP_EPSILON = 0.008;
+	const float CMP_EPSILON = 0.008f;
 #ifndef M_PI
-	const float M_PI = 3.14159265358979323846;
+	const double M_PI = 3.14159265358979323846;
 #endif
 	const auto UP_VEC = fvec3{ 0, 0, 1 };
 	const auto RIGHT_VEC = fvec3{ 0, 1, 0 };

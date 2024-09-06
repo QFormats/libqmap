@@ -215,7 +215,7 @@ namespace qformats::map
 		return fvec4(uAxis[0], uAxis[1], uAxis[2], vSign);
 	}
 
-	fvec2 Face::calcStandardUV(fvec3 vertex, int texW, int texH)
+	fvec2 Face::calcStandardUV(fvec3 vertex, float texW, float texH)
 	{
 		fvec2 uvOut{0};
 
@@ -230,7 +230,7 @@ namespace qformats::map
 		else if (df >= du && df >= dr)
 			uvOut = fvec2(vertex[1], -vertex[2]);
 
-		float angle = rotation * (M_PI / 180);
+		float angle = (float)(rotation * (M_PI / 180));
 		uvOut = fvec2(uvOut[0] * cos(angle) - uvOut[1] * sin(angle), uvOut[0] * sin(angle) + uvOut[1] * cos(angle));
 
 		uvOut[0] /= texW;
@@ -244,7 +244,7 @@ namespace qformats::map
 		return uvOut;
 	}
 
-	fvec2 Face::calcValveUV(fvec3 vertex, int texW, int texH)
+	fvec2 Face::calcValveUV(fvec3 vertex, float texW, float texH)
 	{
 		fvec2 uvOut{0};
 		fvec3 uAxis = valveUV.u.xyz();

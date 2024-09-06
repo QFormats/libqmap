@@ -74,7 +74,7 @@ namespace qformats::map
 			return hasValveUV ? calcValveTangent() : calcStandardTangent();
 		};
 
-		fvec2 CalcUV(fvec3 vertex, int texW, int texH)
+		fvec2 CalcUV(fvec3 vertex, float texW, float texH)
 		{
 			return hasValveUV ? calcValveUV(vertex, texW, texH) : calcStandardUV(vertex, texW, texH);
 		};
@@ -82,8 +82,8 @@ namespace qformats::map
 		void initPlane();
 		fvec4 calcStandardTangent();
 		fvec4 calcValveTangent();
-		fvec2 calcStandardUV(fvec3 vertex, int texW, int texH);
-		fvec2 calcValveUV(fvec3 vertex, int texW, int texH);
+		fvec2 calcStandardUV(fvec3 vertex, float texW, float texH);
+		fvec2 calcValveUV(fvec3 vertex, float texW, float texH);
 		bool getIntersection(const fvec3& start, const fvec3& end, fvec3& out_intersectionPt, float& out_percentage);
 		std::pair<FacePtr, FacePtr> splitFace(const Face* other);
 
